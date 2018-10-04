@@ -11,7 +11,20 @@ filePath=$(realpath $filePath)
 repoPath=$(realpath ./maven)
 repoPath="file://${repoPath}"
 
+sourceFlag=""
+javadocFlag=""
+
+if [[ ! -z "$sourcePath" ]]; then
+    sourcePath=$(realpath $sourcePath)
+    sourceFlag="-Dsources=${sourcePath}"
+fi
+
+if [[ ! -z "$javadocPath" ]]; then
+    javadocPath=$(realpath $javadocPath)
+    javadocFlag="-Djavadoc=${javadocPath}"
+fi
+
 mvn deploy:deploy-file \
     -DgroupId=$groupId -DartifactId=$artifactId -Dversion=$version \
     -Dfile=$filePath -Dpackaging=jar -DgeneratePom=true \
-    -Durl=$repoPath -DcreateChecksum=true
+    -Durl=$repoPath -DcreateChecksum=true $sourceFlag $javadocFlag
